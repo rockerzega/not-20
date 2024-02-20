@@ -11,6 +11,8 @@ export class UniqueValidator implements ValidatorConstraintInterface {
   constructor(private readonly model: Model<any, any>) {}
 
   async validate(value: string, args: any): Promise<boolean> {
+    console.log('args', args);
+    console.log('value', value);
     const path = args.property;
     const filter: { [key: string]: any } = { [path]: value };
 

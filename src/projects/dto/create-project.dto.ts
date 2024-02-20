@@ -1,28 +1,26 @@
-import { model } from 'mongoose';
-import { IsUnique } from 'src/libs/validators';
-import { ProjectSchema } from '../entities/project.entity';
-import { IsAlpha, IsEmail, IsNotEmpty, IsOptional } from 'class-validator';
-
-const projectModel = model('proyectos', ProjectSchema);
+import { Matches, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class CreateProjectDto {
-  @IsAlpha()
-  @IsUnique(projectModel, 'proyecto')
+  @IsString()
+  @Matches(/^[a-zA-Z-]+$$/)
   @IsNotEmpty()
   readonly proyecto: string;
 
-  @IsAlpha()
+  @IsString()
   readonly nombre: string;
 
-  @IsEmail()
-  correo: string;
+  @IsString()
+  @Matches(/^[a-zA-Z-]+$$/)
+  readonly usuario: string;
 
-  @IsAlpha()
-  password: string;
+  @IsString()
+  readonly password: string;
 
+  @IsString()
   @IsOptional()
-  descripcion?: string;
+  readonly descripcion?: string;
 
+  @IsString()
   @IsOptional()
-  opciones?: string;
+  readonly opciones?: string;
 }
