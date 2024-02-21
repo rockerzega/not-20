@@ -1,4 +1,4 @@
-import crypto from 'crypto';
+import * as crypto from 'node:crypto';
 import { deepmergeCustom, DeepMergeLeafURI } from 'deepmerge-ts';
 
 export const deepmerge = deepmergeCustom<{
@@ -57,4 +57,21 @@ export function hashear(text: string) {
     .createHash('md5')
     .update('n0T1' + text + 'Ap1')
     .digest('hex');
+}
+
+/**
+ * Verifica si el el business no llega debe obligatorios estos cambios
+ */
+export function existeID(message: string) {
+  return {
+    validator() {
+      const docObject = this.toObject();
+      if (docObject._id) {
+        return (
+          !!docObject.id || (!!docObject.fechaInicio && !!docObject.fechaFin)
+        );
+      }
+    },
+    message: () => message || `Revise los campos`,
+  };
 }

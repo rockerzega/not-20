@@ -1,7 +1,7 @@
 import { Model, Document, Schema } from 'mongoose';
 import { uniqueDocValidator, removeEmpty } from 'src/libs/utils';
 
-export interface IEntidad extends Document {
+export interface IUser extends Document {
   id: string;
   nombre: string;
   usuario: string;
@@ -12,7 +12,7 @@ export interface IEntidad extends Document {
   admin?: boolean;
 }
 
-const Entidad = new Schema<IEntidad>(
+const User = new Schema<IUser>(
   {
     id: {
       type: String,
@@ -40,6 +40,10 @@ const Entidad = new Schema<IEntidad>(
   { timestamps: true },
 );
 
-export type EntidadDocument = IEntidad & Document;
-export type EntidadModel = Model<Document, IEntidad>;
-export default Entidad;
+User.statics.saludo = () => {
+  console.log('Hola');
+};
+
+export type UserDocument = IUser & Document;
+export type UserModel = Model<Document, IUser>;
+export default User;

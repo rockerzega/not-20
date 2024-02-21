@@ -35,23 +35,20 @@ export class ProjectsController {
   }
 
   @Post()
-  create(@Body() body: CreateProjectDto) {
+  async create(@Body() body: CreateProjectDto) {
     // Validamos que los campos requeridos se encuentren
-    console.log('Flag 1');
     if (!body.nombre || !body.usuario || !body.password || !body.proyecto) {
       throw new BadRequestException({
         info: { typeCode: 'NotData' },
         message: 'Favor de enviar los datos completos',
       });
     }
-    console.log('Flag 2');
     if (/\s/.test(body.usuario) || /\s/.test(body.password)) {
       throw new BadRequestException({
         info: { typeCode: 'WrongData' },
         message: 'El usuario y la contraseña no pueden contener espacios',
       });
     }
-    console.log('Flag 3');
     return this.projectsService.create(body);
   }
 

@@ -1,6 +1,3 @@
-// import { model } from 'mongoose';
-// import { IsUnique } from 'src/libs/validators';
-// import Entidad from '../user.model';
 import {
   IsAlpha,
   IsBoolean,
@@ -8,8 +5,6 @@ import {
   IsNotEmpty,
   IsOptional,
 } from 'class-validator';
-
-// const entidadModel = model('entidades', Entidad);
 
 export class CreateUserDto {
   @IsAlpha()

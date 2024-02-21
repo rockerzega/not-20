@@ -10,7 +10,7 @@ export class CreateProjectDto {
   readonly nombre: string;
 
   @IsString()
-  @Matches(/^[a-zA-Z-]+$$/)
+  @Matches(/^[a-zA-Z0-9-]+$$/)
   readonly usuario: string;
 
   @IsString()
