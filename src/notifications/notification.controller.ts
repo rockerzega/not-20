@@ -1,6 +1,7 @@
 import { NotificationService } from './notification.service';
 import { CreateNotificationDto } from './dto/create-notification.dto';
 import { UpdateNotificationDto } from './dto/update-notification.dto';
+import { ProjectsService } from 'src/projects/projects.service';
 import {
   Get,
   Put,
@@ -13,9 +14,12 @@ import {
 } from '@nestjs/common';
 import { deepmerge } from 'src/libs/utils';
 
-@Controller('notifications')
+@Controller('notificaciones')
 export class NotificationController {
-  constructor(private readonly notificationService: NotificationService) {}
+  constructor(
+    private readonly notificationService: NotificationService,
+    private readonly projectsService: ProjectsService,
+  ) {}
   @Get()
   findAll(@Query() query: any) {
     return this.notificationService.find(query);
@@ -24,14 +28,7 @@ export class NotificationController {
   @Get(':id')
   async findOne(@Param('id') id: string, @Query() query: any) {
     query._id = id;
-    const [notification] = await this.notificationService.find(query);
-    if (!notification) {
-      throw new BadRequestException({
-        info: { typeCode: 'NotFound' },
-        message: 'No se encontraron los parámetros de la petición',
-      });
-    }
-    return notification;
+    return await this.notificationService.find(query);
   }
 
   @Post()
@@ -54,5 +51,10 @@ export class NotificationController {
       await notification.save();
     }
     return { message: 'Notificación actualizada con éxito' };
+  }
+
+  @Get('get-options')
+  getOptions(): Promise<any> {
+    return this.projectsService.getOptions();
   }
 }

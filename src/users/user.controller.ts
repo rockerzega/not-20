@@ -2,6 +2,7 @@ import { deepmerge } from 'src/libs/utils';
 import { UsersService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { ProjectsService } from 'src/projects/projects.service';
 import {
   Get,
   Put,
@@ -13,25 +14,22 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 
-@Controller('entities')
+@Controller('entidades')
 export class UsersController {
-  constructor(private readonly userService: UsersService) {}
+  constructor(
+    private readonly userService: UsersService,
+    private readonly projectsService: ProjectsService,
+  ) {}
   @Get()
   findAll(@Query() query: any) {
+    console.log('find all');
     return this.userService.find(query);
   }
 
   @Get(':id')
   async findOne(@Param('id') id: string, @Query() query: any) {
     query._id = id;
-    const [user] = await this.userService.find(query);
-    if (!user) {
-      throw new BadRequestException({
-        info: { typeCode: 'NotFound' },
-        message: 'No se encontraron los parámetros de la petición',
-      });
-    }
-    return user;
+    return await this.userService.find(query);
   }
 
   @Post()
@@ -54,5 +52,10 @@ export class UsersController {
       await user.save();
     }
     return { message: 'Usuario actualizado con éxito' };
+  }
+
+  @Get('get-options')
+  async getOptions() {
+    return await this.projectsService.getOptions();
   }
 }

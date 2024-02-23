@@ -4,14 +4,15 @@ import { ProjectsService } from './projects.service';
 import { ProjectsController } from './projects.controller';
 import Project from './projects.model';
 import { AuthMiddleware } from 'src/middleware/auth-middleware';
-import { AuthService } from 'src/middleware/auth-middleware.service';
+import { AuthMiddlewareService } from 'src/middleware/auth-middleware.service';
 
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: 'proyectos', schema: Project }]),
   ],
+  exports: [ProjectsService],
   controllers: [ProjectsController],
-  providers: [ProjectsService, AuthService],
+  providers: [ProjectsService, AuthMiddlewareService],
 })
 export class ProjectsModule {
   configure(consumer: MiddlewareConsumer) {

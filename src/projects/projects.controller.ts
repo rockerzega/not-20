@@ -13,18 +13,19 @@ import {
   Put,
 } from '@nestjs/common';
 
-@Controller('projects')
+@Controller('proyectos')
 export class ProjectsController {
   constructor(private readonly projectsService: ProjectsService) {}
   @Get()
   findAll(@Query() query: any) {
+    console.log('Find ALL', query);
     return this.projectsService.find(query);
   }
 
   @Get(':id')
   async findOne(@Param('id') id: string, @Query() query: any) {
     query._id = id;
-    const [project] = await this.projectsService.find(query);
+    const project = await this.projectsService.find(query);
     if (!project) {
       throw new BadRequestException({
         info: { typeCode: 'NotFound' },
@@ -76,6 +77,10 @@ export class ProjectsController {
     return { message: 'Proyecto actualizado con éxito' };
   }
 
+  @Get('get-options')
+  async getOptions() {
+    return this.projectsService.getOptions();
+  }
   // @Delete(':id')
   // remove(@Param('id') id: string) {
   //   return this.projectsService.remove(+id);

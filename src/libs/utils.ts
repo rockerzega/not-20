@@ -13,6 +13,8 @@ export const msqTemporalOptions = {
   fieldsQueryName: 'fields',
   sortQueryName: 'sort',
   queryName: 'q',
+  allFieldsQueryName: 'getAllFields',
+  defaultLimit: 10,
 };
 
 export function uniqueDocValidator(fields: any, message?: string) {

@@ -1,7 +1,7 @@
 import { InjectModel } from '@nestjs/mongoose';
 import Project, { IProject, ProjectDocument } from './projects.model';
 import mongooseSmartQuery from 'mongoose-smart-query';
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { msqTemporalOptions } from 'src/libs/utils';
 import { CreateProjectDto } from './dto/create-project.dto';
@@ -21,8 +21,25 @@ export class ProjectsService {
   ) {}
 
   async find(query: Record<string, any>) {
-    console.log('query', query);
-    return await this.modelProject.smartQuery(query);
+    if (query._id) {
+      console.log('Find ONE', query);
+      const [project] = await this.modelProject.smartQuery(query);
+      if (!project) {
+        throw new BadRequestException({
+          info: { typeCode: 'NotFound' },
+          message: 'El proyecto que solicita, no existe',
+        });
+      }
+      console.log('Project', project);
+      project.opciones = JSON.parse(project.opciones || '{}');
+      return project;
+    }
+    const data = await this.modelProject.smartQuery(query);
+    return {
+      data,
+      total: await this.modelProject.smartCount(query),
+      page: parseInt(query.page || '1'),
+    };
   }
 
   async create(body: CreateProjectDto) {
@@ -32,5 +49,17 @@ export class ProjectsService {
 
   async findOne(id: string) {
     return await this.modelProject.findById(id);
+  }
+
+  async getOptions() {
+    const opciones = await this.modelProject.smartQuery({
+      fields: 'proyecto nombre',
+    });
+    return {
+      proyectos: opciones.map((item) => ({
+        value: item.nombre,
+        label: item.proyecto,
+      })),
+    };
   }
 }

@@ -43,7 +43,22 @@ export class UsersService {
   ) {}
 
   async find(query: Record<string, any>) {
-    return await this.userModel.smartQuery(query);
+    if (query._id) {
+      const [user] = await this.userModel.smartQuery(query);
+      if (!user) {
+        throw new NotFoundException({
+          info: { typeCode: 'NotFound' },
+          message: 'El usuario que solicita, no existe',
+        });
+      }
+      return user;
+    }
+    const data = await this.userModel.smartQuery(query);
+    return {
+      data,
+      total: await this.userModel.smartCount(query),
+      page: parseInt(query.page || '1'),
+    };
   }
 
   async getone(query: Record<string, any>) {

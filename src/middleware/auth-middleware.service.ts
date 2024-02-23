@@ -1,10 +1,10 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import * as dayjs from 'dayjs';
 import { decode } from 'jwt-simple';
-import dayjs from 'dayjs';
 import { secret } from 'src/configs/app.configs';
+import { BadRequestException, Injectable } from '@nestjs/common';
 
 @Injectable()
-export class AuthService {
+export class AuthMiddlewareService {
   validateToken(token: string) {
     let payload: any;
     try {

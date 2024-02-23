@@ -1,0 +1,24 @@
+[
+  {
+    "key": "admin",
+    "label": "Administrador",
+    "icon": "SolutionOutlined",
+    "submodules": [
+      {
+        "key": "operadores",
+        "label": "Operadores",
+        "icon": "UsergroupAddOutlined"
+      },
+      {
+        "key": "proyectos",
+        "label": "Proyectos",
+        "icon": "PushpinOutlined"
+      }
+    ]
+  },
+  {
+    "key": "notificaciones",
+    "label": "Notificaciones",
+    "icon": "BellOutlined"
+  }
+]

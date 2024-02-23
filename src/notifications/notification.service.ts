@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { msqTemporalOptions } from 'src/libs/utils';
 import mongooseSmartQuery from 'mongoose-smart-query';
@@ -16,19 +16,34 @@ Notification.plugin(mongooseSmartQuery, {
 export class NotificationService {
   constructor(
     @InjectModel('notificaciones')
-    public readonly modelProject: NotificationModel,
+    public readonly modelNotificacion: NotificationModel,
   ) {}
 
   async find(query: Record<string, any>) {
-    return await this.modelProject.smartQuery(query);
+    if (query._id) {
+      const [notification] = await this.modelNotificacion.smartQuery(query);
+      if (!notification) {
+        throw new BadRequestException({
+          info: { typeCode: 'NotFound' },
+          message: 'No se encontraró la notificación',
+        });
+      }
+      return notification;
+    }
+    const data = await this.modelNotificacion.smartQuery(query);
+    return {
+      data,
+      total: await this.modelNotificacion.smartCount(query),
+      page: parseInt(query.page || '1'),
+    };
   }
 
   async create(body: CreateNotificationDto) {
-    const createdProject = new this.modelProject(body);
-    return await createdProject.save();
+    const createdNotificacion = new this.modelNotificacion(body);
+    return await createdNotificacion.save();
   }
 
   async findOne(id: string) {
-    return await this.modelProject.findById(id);
+    return await this.modelNotificacion.findById(id);
   }
 }

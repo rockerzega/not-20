@@ -1,5 +1,5 @@
-import { AuthService } from './auth-middleware.service';
 import { FastifyRequest, FastifyReply } from 'fastify';
+import { AuthMiddlewareService } from './auth-middleware.service';
 import {
   BadRequestException,
   Injectable,
@@ -8,14 +8,14 @@ import {
 
 @Injectable()
 export class AuthMiddleware implements NestMiddleware {
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthMiddlewareService) {}
   async use(
     req: FastifyRequest,
     res: FastifyReply,
     done: (error?: Error) => void,
   ) {
     console.log('req.headers', req.headers);
-    const token = req.headers.authorization?.split(' ')[1];
+    const token = req.headers.authorization;
     if (token) {
       try {
         const payload = await this.authService.validateToken(token);
