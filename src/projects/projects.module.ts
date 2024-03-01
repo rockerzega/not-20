@@ -1,10 +1,8 @@
-import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
+import Project from './projects.model';
+import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ProjectsService } from './projects.service';
 import { ProjectsController } from './projects.controller';
-import Project from './projects.model';
-import { AuthMiddleware } from 'src/middleware/auth-middleware';
-import { AuthMiddlewareService } from 'src/middleware/auth-middleware.service';
 
 @Module({
   imports: [
@@ -12,12 +10,6 @@ import { AuthMiddlewareService } from 'src/middleware/auth-middleware.service';
   ],
   exports: [ProjectsService],
   controllers: [ProjectsController],
-  providers: [ProjectsService, AuthMiddlewareService],
+  providers: [ProjectsService],
 })
-export class ProjectsModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(AuthMiddleware)
-      .forRoutes({ path: '/projects', method: RequestMethod.ALL });
-  }
-}
+export class ProjectsModule {}

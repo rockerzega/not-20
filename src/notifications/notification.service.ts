@@ -43,7 +43,18 @@ export class NotificationService {
     return await createdNotificacion.save();
   }
 
-  async findOne(id: string) {
-    return await this.modelNotificacion.findById(id);
+  async findOne(id: string | object) {
+    if(typeof id === 'string') {
+      return await this.modelNotificacion.findById(id);
+    }
+    return (await this.modelNotificacion.find(id))[0];
+  }
+
+  async aggregate(query: any) {
+    return await this.modelNotificacion.aggregate(query);
+  }
+
+  async deleteOne(query: any) {
+    return await this.modelNotificacion.deleteOne(query);
   }
 }

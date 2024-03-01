@@ -6,10 +6,11 @@ import {
   FastifyAdapter,
   NestFastifyApplication,
 } from '@nestjs/platform-fastify';
+import { MongoIoAdapter } from './socket/socket.ioAdapter';
 
 declare module 'fastify' {
   interface FastifyRequest {
-    payload: any;
+    payload?: any;
   }
 }
 async function bootstrap() {
@@ -20,6 +21,9 @@ async function bootstrap() {
       // logger: false,
     },
   );
+  const mongoAdapter = new MongoIoAdapter(app);
+  await mongoAdapter.connectToMongo();
+  app.useWebSocketAdapter(mongoAdapter);
   app.register(cookie);
   app.useGlobalFilters(new HttpErrorMiddleware());
   const PORT = process.env.PORT || 5000;

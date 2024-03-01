@@ -6,10 +6,13 @@ import { AppController } from './app.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import MongoConfig from './configs/mongo.configs';
 import { SocketModule } from './socket/socket.module';
-import { Module, ValidationPipe } from '@nestjs/common';
 import { ProjectsModule } from './projects/projects.module';
+import { AuthMiddleware } from 'src/middleware/auth-middleware';
 import { PushUsersModule } from './push-users/push-users.module';
 import { NotificationModule } from './notifications/notification.module';
+import { AuthMiddlewareService } from 'src/middleware/auth-middleware.service';
+import { MiddlewareConsumer, Module, RequestMethod, ValidationPipe } from '@nestjs/common';
+
 
 @Module({
   imports: [
@@ -22,6 +25,13 @@ import { NotificationModule } from './notifications/notification.module';
     PushUsersModule,
   ],
   controllers: [AppController],
-  providers: [AppService, { provide: APP_PIPE, useClass: ValidationPipe }],
+  providers: [AppService, AuthMiddlewareService, { provide: APP_PIPE, useClass: ValidationPipe }],
 })
-export class AppModule {}
+export class AppModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(AuthMiddleware)
+      .exclude({ path: 'auth/login', method: RequestMethod.POST })
+      .forRoutes({ path: '*', method: RequestMethod.ALL });
+  }
+}

@@ -1,5 +1,7 @@
 import * as crypto from 'node:crypto';
 import { deepmergeCustom, DeepMergeLeafURI } from 'deepmerge-ts';
+import { BadRequestException } from '@nestjs/common';
+import { ICLient } from './interfaces-collection';
 
 export const deepmerge = deepmergeCustom<{
   DeepMergeArraysURI: DeepMergeLeafURI;
@@ -76,4 +78,35 @@ export function existeID(message: string) {
     },
     message: () => message || `Revise los campos`,
   };
+}
+
+export function esAdmin(payload: Record<string, any>, master: boolean = false) {
+  if (master && !payload.master) {
+    throw new BadRequestException({
+      info: { typeCode: 'NoGeneralAdmin' },
+      message:
+        'El recurso al que intenta acceder, no esta disponible para su rol',
+    });
+  }
+  if (!payload.admin) {
+    throw new BadRequestException({
+      info: { typeCode: 'NoAdministrator' },
+      message:
+        'El recurso al que intenta acceder, no esta disponible para su rol',
+    });
+  }
+}
+
+export function getPathId(cliente: ICLient): string {
+  let path = cliente.id;
+  if (cliente.args) {
+    const args = cliente.args;
+    delete args.page;
+    delete args.limit;
+    delete args.latest;
+    for (const property in args) {
+      path = `${path}/${args[property]}`;
+    }
+  }
+  return path;
 }

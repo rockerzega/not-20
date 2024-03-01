@@ -14,7 +14,6 @@ export class AuthMiddleware implements NestMiddleware {
     res: FastifyReply,
     done: (error?: Error) => void,
   ) {
-    console.log('req.headers', req.headers);
     const token = req.headers.authorization;
     if (token) {
       try {

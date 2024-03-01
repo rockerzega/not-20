@@ -14,5 +14,6 @@ import { ProjectsModule } from 'src/projects/projects.module';
   ],
   controllers: [NotificationController],
   providers: [NotificationService],
+  exports: [NotificationService],
 })
 export class NotificationModule {}

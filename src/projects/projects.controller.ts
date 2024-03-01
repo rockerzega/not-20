@@ -11,21 +11,21 @@ import {
   Post,
   Body,
   Put,
+  Req,
 } from '@nestjs/common';
 
 @Controller('proyectos')
 export class ProjectsController {
   constructor(private readonly projectsService: ProjectsService) {}
   @Get()
-  findAll(@Query() query: any) {
-    console.log('Find ALL', query);
-    return this.projectsService.find(query);
+  findAll(@Query() query: any, @Req() req: any) {
+    return this.projectsService.find(query, req.raw.payload);
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string, @Query() query: any) {
+  async findOne(@Param('id') id: string, @Query() query: any, @Req() req: any) {
     query._id = id;
-    const project = await this.projectsService.find(query);
+    const project = await this.projectsService.find(query, req.raw.payload);
     if (!project) {
       throw new BadRequestException({
         info: { typeCode: 'NotFound' },

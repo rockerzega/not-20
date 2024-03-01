@@ -3,7 +3,7 @@ import Project, { IProject, ProjectDocument } from './projects.model';
 import mongooseSmartQuery from 'mongoose-smart-query';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
-import { msqTemporalOptions } from 'src/libs/utils';
+import { esAdmin, msqTemporalOptions } from 'src/libs/utils';
 import { CreateProjectDto } from './dto/create-project.dto';
 
 Project.plugin(mongooseSmartQuery, {
@@ -20,9 +20,9 @@ export class ProjectsService {
     public readonly modelProject: Model<IProject, ProjectDocument>,
   ) {}
 
-  async find(query: Record<string, any>) {
+  async find(query: Record<string, any>, payload: Record<string, any>) {
+    esAdmin(payload, true);
     if (query._id) {
-      console.log('Find ONE', query);
       const [project] = await this.modelProject.smartQuery(query);
       if (!project) {
         throw new BadRequestException({
